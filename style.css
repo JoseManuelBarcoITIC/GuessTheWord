@@ -1,0 +1,55 @@
+      body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f0f0f0;
+        }
+        .titol {
+            color: #333;
+            text-align: center;
+        }
+        .standarttext{
+            text-align:center;
+            
+        }
+        .input-container {
+            display: flex;
+            justify-content: center; 
+            align-items: center;     
+            gap: 10px;               
+        }
+        input[type="text"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 300px;
+            align-items: center;
+        }
+        .boto {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .boto:hover {
+            background: #0056b3;
+        }
+        
+        .boto-borrar:hover {
+            background-color: #c82333;
+        }
+       
+        .firefoxbackground {
+            background-color: #FF7139;
+        }
+        .chromebackground {
+            background-color: #4285F4;
+        }
+         .edgebackground {
+            background-color: #0078D7;
+        }
