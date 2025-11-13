@@ -2,21 +2,31 @@
 const pbrowsername = document.getElementById("browsername");
 const pLanguage = document.getElementById("browserlanguage");
 const pURL = document.getElementById("url");
-const bodyIndex = document.querySelector("body")
+const btnStartGame = document.getElementById("btstartgame");
+const bodyIndex = document.querySelector("body");
+const inputPlayerName = document.querySelector(".input-container input")
 
 const browserinfo = {
     language:"",
     browsername:"",
-    number:0.00,
     url:""
-}
+};
 
 window.addEventListener("load", function (){
    changeBrowserInfo();
    changebackgroundcolor();
 });
 
- 
+btnStartGame.addEventListener("click" ,function (e){
+    if(inputPlayerName.value !==  ""){
+    sessionStorage.setItem("browsername",JSON.stringify(browserinfo))
+    window.open("game.html", "_self").focus();
+    window.close;  
+    }else{
+        alert("Ingrese un nom. Sis Plau")
+    }
+   
+})
 
  const changeBrowserName = function(){
     const userAgent = navigator.userAgent;
@@ -34,7 +44,7 @@ window.addEventListener("load", function (){
     } else {
         return "Desconocido";
     }
- }
+ };
  const changeBrowserInfo = function(){
     browserinfo.browsername = changeBrowserName();
     browserinfo.language = navigator.language;
@@ -42,15 +52,16 @@ window.addEventListener("load", function (){
     
     pbrowsername.textContent = browserinfo.browsername
     pLanguage.textContent = browserinfo.language
-    pURL.textContent = browserinfo.url
- }
+    pURL.textContent = location.origin
+ };
+ 
  const changebackgroundcolor = function(){
     bodyIndex.className= "";
     if(browserinfo.browsername === "Firefox"){
-        bodyIndex.className = "firefoxbackground";
+        bodyIndex.classList.add(firefoxbackground);
     }else if(browserinfo.browsername === "Edge"){
-        bodyIndex.className= "edgebackground";
+        bodyIndex.classList.add ("edgebackground");
     }else if(browserinfo.browsername === "Chrome"){
-        bodyIndex.className= "chromebackground";
+        bodyIndex.classList.add("chromebackground");
     }
- }
+ };

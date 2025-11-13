@@ -3,17 +3,24 @@
             padding: 40px;
             background: #f0f0f0;
         }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px; 
+            flex-wrap: wrap; 
+        }
         .titol {
             color: #333;
             text-align: center;
         }
         .standarttext{
             text-align:center;
-            
+          
         }
         .input-container {
             display: flex;
-            justify-content: center; 
+            justify-items: center;
             align-items: center;     
             gap: 10px;               
         }
@@ -21,19 +28,19 @@
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
-            width: 300px;
+            font-size: 8px;
+            width: 80px;
+            height: 5px;
             align-items: center;
         }
         .boto {
-            background: #007bff;
+            background: green;
             color: white;
             border: none;
             padding: 12px 24px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            text-align: center;
         }
 
         .boto:hover {
