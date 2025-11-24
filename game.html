@@ -9,15 +9,34 @@
 <body>
     <main>
     <header><div class="header-container">
-        <button id = " return"class="button">Tornar</button>
-        <button class="button">Instruccions</button>
+        <button id = "return" class="button">Tornar</button>
+        <button id = "rules" class="button">Instruccions</button>
          <div class="input-container">
-            <p class="standarttext">Idioma</p>
-            <input type="text">
+            <p class="standarttext">Idioma </p>
+            <input type="password">
         </div>
-        <button class="button">Començar partida</p>
+        <button id="startgame"class="button">Començar partida</p>
     </header>
-    
+    <h1 class="wordgame">COMENÇAR PARTIDA</h1>
+      <div class="main-container">
+          <div class="left-container">
+            <p id="PlayerName1">NomPlayer1</p>
+            
+            <p>PUNTS PARTIDES ACTUALS</p>
+            <p id="GameScore">0</p>
 
+            <p>TOTAL PARTIDES</p>
+            <p id="TotalGames">0</p>
+
+            <p>PARTIDES GUANYADES</p>
+            <p id="WonGames">0</p>
+
+            <p >PARTIDA AMB MES PUNTS</p>
+            <p id="MaxScoreGame">No hi ha punts</p>
+
+            </div>
+            <img class="ballonimg"src = "images/img_globus/img_0.png">
+        </div>
+    <div class="keyboard-container"></div>
     </main>
-    <script src="script.js"></script>
+    <script src="script/gamescript.js"></script>
