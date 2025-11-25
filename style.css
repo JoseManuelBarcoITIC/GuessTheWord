@@ -20,18 +20,18 @@
         }
         .input-container {
             display: flex;
-            justify-items: center;
-            align-items: center;     
-            gap: 10px;               
+            justify-content: center; /* centra horizontalmente */
+            align-items: center;     /* centra verticalmente */
+            gap: 10px;
+            margin-bottom: 20px;                
         }
         input[type="text"] {
-            padding: 12px;
+            padding: 8px 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 8px;
-            width: 80px;
-            height: 5px;
-            align-items: center;
+            font-size: 16px; /* más legible */
+            width: 200px;    /* ancho adecuado */
+            height: 15px; 
         }
         .boto {
             background: green;
@@ -47,13 +47,19 @@
             background: #0056b3;
         }
         
-        .boto-borrar:hover {
-            background-color: #c82333;
-        }
+        
        
-        .wordgame {
+        .button-div {
+            text-align: center;
+            justify-content: center; /* centra los botones horizontalmente */
+            gap: 10px;               /* espacio entre ellos */
+            margin-top: 20px;        /* un poco de separación del contenido de arriba */
+        }
+
+        /* Clase específica para hacerlos más pequeños solo en esta página */
+            .wordgame {
             width: 100%;               
-            background-color: #4CAF50; 
+            background-color: #656565; 
             color: white;              
             text-align: center;        
             padding: 20px 0;           
@@ -65,8 +71,8 @@
         }
         .main-container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            justify-content: flex-start;
+            align-items: center;
             background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
@@ -98,6 +104,21 @@
             margin: 0;             
             line-height: 1.5;      
             padding: 2px 0;  
+            }
+            .right-container {
+                margin-left: auto;   /* esto empuja el div hasta el borde derecho */
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-width: 300px;
+        }
+
+        .right-container p {
+        font-weight: bold;
+        text-align: center;
+        margin: 0;
+        line-height: 1.5;
+        padding: 2px 0;
         }
 
         .keyboard-container {
@@ -117,7 +138,12 @@
             cursor: pointer;
             background-color: #f0f0f0;
         }
-
+        .gamewonword{
+            background-color: #9ba43a;
+        }
+        .gamewordlost{
+            background-color: #eb0000;
+        }
         .keyboard-container button:hover {
             background-color: #dcdcdc;
         }

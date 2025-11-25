@@ -7,6 +7,9 @@ const btnEraseScore = document.getElementById("erasescore")
 const bodyIndex = document.querySelector("body");
 const inputPlayerName = document.querySelector(".input-container input")
 
+const maxscoreday = localStorage.getItem("maxscoreday");
+const maxscore = localStorage.getItem("maxscore");
+
 const browserinfo = {
     language:"",
     browsername:"",
@@ -24,6 +27,7 @@ function setCookie(cname, cvalue, exdays) {
 window.addEventListener("load", function (){
    changeBrowserInfo();
    changebackgroundcolor();
+   loadMaxScore();
 });
 
 btnStartGame.addEventListener("click" ,function (e){
@@ -81,4 +85,8 @@ btnEraseScore.addEventListener("click" ,function (e){
         bodyIndex.classList.add("chromebackground");
     }
  };
+ const loadMaxScore = function(){
+    pMaxScore.textContent = maxscoreday + " - " + maxscore + " punts"
+
+ }
  

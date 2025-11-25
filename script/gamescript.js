@@ -1,16 +1,23 @@
+// CONSTANT DOM
+
 const btnReturn = document.getElementById("return")
 const btnRules = document.getElementById("rules")
 const btnStartGame = document.getElementById("startgame")
+const hGameWord = document.querySelector(".wordgame")
 const inputPlayerName = document.querySelector(".input-container input")
 const keyboardContainer = document.querySelector('.keyboard-container');
-const imgBallon = document.querySelector("img")
+const imgBallon = document.querySelector(".main-container img")
 const pLanguage = document.querySelector(".input-container p")
 const pWord = document.querySelector("h1");
 const pPlayerName1 = document.getElementById("PlayerName1");
 const pGameScore = document.getElementById("GameScore");
 const pWonGames = document.getElementById("WonGames");
+const pMaxScore = document.getElementById("MaxScoreGame")
 const pTotalGames = document.getElementById("TotalGames");
 const bodyGame = document.querySelector("body");
+
+
+//VARIABLES JOC
 const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const keyboardButtons = [];
@@ -25,16 +32,25 @@ const playerinfo = {
     gamescore:0,
     wonGames:0,
     TotalGames:0,
+    MaxScoreDay:new Date(),
     MaxScore:""
 };
 
 
+// EVENTS
+
+const loadbuttons = function (){
+
     for (let i = 0; i < letters.length; i++) {
-         const btn = document.createElement('button');
-          btn.textContent = letters[i]; 
-          keyboardContainer.appendChild(btn)
-           keyboardButtons.push(btn);
+        const btn = document.createElement('button');
+        btn.textContent = letters[i]; 
+        btn.addEventListener("click", function(){
+            gameLogic(btn);
+        });
+        keyboardContainer.appendChild(btn);
+        keyboardButtons.push(btn);
      }
+}
 
 btnReturn.addEventListener("click", function(){
     window.open("index.html", "_self","width=400,height=400").focus();  
@@ -47,14 +63,21 @@ btnRules.addEventListener("click", function(){
 btnStartGame.addEventListener("click",function(){
     startGame()
 })
-keyboardButtons.forEach(function(btn, index) {
-    btn.addEventListener("click", function() {
+
+window.addEventListener("load", function (){
+   changeLanguageText();
+   changebackgroundcolor();
+   getPlayerName();
+   loadbuttons();
+});
+
+//FUNCTIONS 
+const gameLogic = function(btn){
         var letterPoints = 0;
         var letra = btn.textContent.toUpperCase(); 
-
-        if (wordArray.length === 0) return;
-
         var found = false;
+        const now = Date();
+
         for (var i = 0; i < wordArray.length; i++) {
             if (wordArray[i].toUpperCase() === letra) {
                 displayArray[i] = wordArray[i]; 
@@ -80,11 +103,15 @@ keyboardButtons.forEach(function(btn, index) {
         btn.style.backgroundColor = found ? "#4CAF50" : "#c82333";
 
         if(displayArray.join("") === wordArray.join("")){
-            
+            hGameWord.classList.add("gamewonword")
             keyboardButtons.forEach(function(b){
                 b.disabled = false;
                 b.style.backgroundColor = "#f0f0f0";
-            });           
+            });     
+            if(playerinfo.gamescore > playerinfo.MaxScore){
+                playerinfo.MaxScore=playerinfo.gamescore;
+                pMaxScore.textContent=playerinfo.MaxScoreDay.toLocaleString() + " - " + playerinfo.gamescore + " punts";
+            }      
             streak = 0;
             playerinfo.TotalGames+=1;
             playerinfo.wonGames+=1;
@@ -93,20 +120,29 @@ keyboardButtons.forEach(function(btn, index) {
             pWonGames.textContent = playerinfo.wonGames;
             inputPlayerName.disabled = false;
             btnStartGame.disabled = false;
-      }
-    });
-});
+            localStorage.setItem("maxscore", playerinfo.MaxScore);
+            localStorage.setItem("maxscoreday", playerinfo.MaxScoreDay.toISOString());
 
-window.addEventListener("load", function (){
-   changeLanguageText();
-   changebackgroundcolor();
-   getPlayerName();
-   generateButtonLetters();
-});
-
+        }
+        if(errors >= maxErrors){
+            hGameWord.classList.add("gamewordlost")
+            keyboardButtons.forEach(function(b){
+                b.disabled = false;
+                b.style.backgroundColor = "#f0f0f0";
+            });           
+            streak = 0;
+            playerinfo.TotalGames+=1;
+            playerinfo.gamescore = 0;
+            pTotalGames.textContent = playerinfo.TotalGames;
+            inputPlayerName.disabled = false;
+            btnStartGame.disabled = false; 
+            pWord.textContent = wordArray.join("");
+        }
+};
 const changeLanguageText = function(){
     pLanguage.textContent = "Idioma " + "("+ browserinfo.language + ")";
- };
+};
+
 function changebackgroundcolor(){
     bodyGame.className= "";
     if(browserinfo.browsername === "Firefox"){
@@ -121,12 +157,15 @@ function getPlayerName(){
     playerinfo.playerName = getCookie("playerName");
     pPlayerName1.textContent = playerinfo.playerName;
 };
-function generateButtonLetters(){
-}
+
 function startGame(){
     const word = inputPlayerName.value.toUpperCase();
     if(Number(word)){
         alert("Ingrese nomes caracters no numeric")
+    }else if (inputPlayerName.value === "" ){
+        alert("Ingrese una paraula")
+    }else if(inputPlayerName.value.length < 3){
+         alert("Ingrese una paraula mes llarga que 3 lletres")
     }else{
     wordArray = word.split(""); 
     displayArray = wordArray.map(() => "_"); 
@@ -134,6 +173,7 @@ function startGame(){
     playerinfo.gamescore = 0;
     pGameScore.textContent = playerinfo.gamescore;
     btnStartGame.disabled = true;
+    inputPlayerName.value = "";
     inputPlayerName.disabled = true;
     }
 }
