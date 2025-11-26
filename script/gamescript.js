@@ -22,6 +22,7 @@ const bodyGame = document.querySelector("body");
 const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const keyboardButtons = [];
+const single =true;
 var streak = 0; 
 var errors = 0;
 var maxErrors = 9;
@@ -73,9 +74,10 @@ window.addEventListener("load", function (){
    changebackgroundcolor();
    getPlayerName();
    loadbuttons();
+   gamemode();
 });
 
-//FUNCTIONS 
+//FUNCTIONS OF HTML BASICS
 const changeLanguageText = function(){
     pLanguage.textContent = "Idioma " + "("+ browserinfo.language + ")";
 };
@@ -94,6 +96,29 @@ const getPlayerName = function(){
     pPlayerName1.textContent = playerinfo.playerName;
 };
 
+const eyeiconLogic = function(){
+    if(imgeye.src.includes("images/eye.png")){
+        inputPlayerName.type="text"
+        imgeye.src="images/eyeclosed.png"
+    }else{
+        inputPlayerName.type="password"
+        imgeye.src="images/eye.png"
+
+    }
+
+}
+const gamemode = function(){
+    const player1Cookie = getCookie("playerName");
+    const player2Cookie = getCookie("playerName2");
+    if(player1Cookie){
+        if(player2Cookie){
+            return{single:false}
+        }else{
+            return{single:true}
+        }
+    }
+}
+//FUNCTIONS GAME
 const startGame = function(){
     const word = inputPlayerName.value.toUpperCase();
     if(Number(word)){
@@ -112,24 +137,13 @@ const startGame = function(){
         b.disabled = false;
         b.style.backgroundColor = ""; 
     });
-
-
     btnStartGame.disabled = true;
     inputPlayerName.value = "";
     inputPlayerName.disabled = true;
     }
 }
-const eyeiconLogic = function(){
-    if(imgeye.src.includes("images/eye.png")){
-        inputPlayerName.type="text"
-        imgeye.src="images/eyeclosed.png"
-    }else{
-        inputPlayerName.type="password"
-        imgeye.src="images/eye.png"
 
-    }
 
-}
 const gameLogic = function(btn){
         var letterPoints = 0;
         var letra = btn.textContent.toUpperCase(); 
@@ -211,6 +225,7 @@ const updateBallongImage = function() {
         imgBallon.src = `images/img_globus/img_${errors}.png`;
     }
 }
+
 const getCookie = function(cname) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);

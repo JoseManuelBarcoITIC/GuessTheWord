@@ -6,6 +6,7 @@ const btnStartGame = document.getElementById("btnstartgame");
 const btnEraseScore = document.getElementById("erasescore")
 const bodyIndex = document.querySelector("body");
 const inputPlayerName = document.querySelector(".input-container input")
+const inputPlayerName2 = document.getElementById("playername2");
 
 const maxscoreday = localStorage.getItem("maxscoreday");
 const maxscore = localStorage.getItem("maxscore");
@@ -31,15 +32,23 @@ window.addEventListener("load", function (){
 });
 
 btnStartGame.addEventListener("click" ,function (e){
-    if(inputPlayerName.value !==  ""){
-    const playerName = inputPlayerName.value.trim();
-    sessionStorage.setItem("browserinfo",JSON.stringify(browserinfo))
-    setCookie("playerName", playerName, 7);
-    window.open("game.html", "_self").focus();
-    }else{
-        alert("Ingrese un nom. Sis Plau")
+    if (inputPlayerName.value === "") {
+        alert("Ingrese un nom. Sis Plau");
+        return;
     }
-   
+    sessionStorage.setItem("browserinfo", JSON.stringify(browserinfo));
+
+    if (inputPlayerName2.value === "") {
+        const playerName1 = inputPlayerName.value.trim();
+        setCookie("playerName", playerName1, 7);
+        window.open("game.html", "_self").focus();
+    } else {
+        const playerName1 = inputPlayerName.value.trim();
+        const playerName2 = inputPlayerName2.value.trim();
+        setCookie("playerName", playerName1, 7);
+        setCookie("playerName2", playerName2, 7);
+        window.open("game.html", "_self").focus();
+    }
 })
 
 btnEraseScore.addEventListener("click" ,function (e){
