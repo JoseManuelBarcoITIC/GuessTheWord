@@ -7,6 +7,7 @@ const hGameWord = document.querySelector(".wordgame")
 const inputPlayerName = document.querySelector(".input-container input")
 const keyboardContainer = document.querySelector('.keyboard-container');
 const imgBallon = document.querySelector(".main-container img")
+const imgeye = document.querySelector(".eye-icon")
 const pLanguage = document.querySelector(".input-container p")
 const pWord = document.querySelector("h1");
 const pPlayerName1 = document.getElementById("PlayerName1");
@@ -64,6 +65,9 @@ btnStartGame.addEventListener("click",function(){
     startGame()
 })
 
+imgeye.addEventListener("click",function(){
+    eyeiconLogic();
+})
 window.addEventListener("load", function (){
    changeLanguageText();
    changebackgroundcolor();
@@ -72,10 +76,65 @@ window.addEventListener("load", function (){
 });
 
 //FUNCTIONS 
+const changeLanguageText = function(){
+    pLanguage.textContent = "Idioma " + "("+ browserinfo.language + ")";
+};
+const changebackgroundcolor = function(){
+    bodyGame.className= "";
+    if(browserinfo.browsername === "Firefox"){
+        bodyGame.classList.add("firefoxbackground");
+    }else if(browserinfo.browsername === "Edge"){
+        bodyGame.classList.add ("edgebackground");
+    }else if(browserinfo.browsername === "Chrome"){
+        bodyGame.classList.add("chromebackground");
+    }
+};
+const getPlayerName = function(){
+    playerinfo.playerName = getCookie("playerName");
+    pPlayerName1.textContent = playerinfo.playerName;
+};
+
+const startGame = function(){
+    const word = inputPlayerName.value.toUpperCase();
+    if(Number(word)){
+        alert("Ingrese nomes caracters no numeric")
+    }else if (inputPlayerName.value === "" ){
+        alert("Ingrese una paraula")
+    }else if(inputPlayerName.value.length < 3){
+         alert("Ingrese una paraula mes llarga que 3 lletres")
+    }else{
+    wordArray = word.split(""); 
+    displayArray = wordArray.map(() => "_"); 
+    pWord.textContent = displayArray.join("");
+    playerinfo.gamescore = 0;
+    pGameScore.textContent = playerinfo.gamescore;
+    keyboardButtons.forEach(b => {
+        b.disabled = false;
+        b.style.backgroundColor = ""; 
+    });
+
+
+    btnStartGame.disabled = true;
+    inputPlayerName.value = "";
+    inputPlayerName.disabled = true;
+    }
+}
+const eyeiconLogic = function(){
+    if(imgeye.src.includes("images/eye.png")){
+        inputPlayerName.type="text"
+        imgeye.src="images/eyeclosed.png"
+    }else{
+        inputPlayerName.type="password"
+        imgeye.src="images/eye.png"
+
+    }
+
+}
 const gameLogic = function(btn){
         var letterPoints = 0;
         var letra = btn.textContent.toUpperCase(); 
         var found = false;
+        var winpercentage = 0;
         const now = Date();
 
         for (var i = 0; i < wordArray.length; i++) {
@@ -105,19 +164,22 @@ const gameLogic = function(btn){
         if(displayArray.join("") === wordArray.join("")){
             hGameWord.classList.add("gamewonword")
             keyboardButtons.forEach(function(b){
-                b.disabled = false;
+                b.disabled = true;
                 b.style.backgroundColor = "#f0f0f0";
             });     
             if(playerinfo.gamescore > playerinfo.MaxScore){
                 playerinfo.MaxScore=playerinfo.gamescore;
                 pMaxScore.textContent=playerinfo.MaxScoreDay.toLocaleString() + " - " + playerinfo.gamescore + " punts";
-            }      
+            }     
             streak = 0;
+            errors = 0;
+            updateBallongImage();
             playerinfo.TotalGames+=1;
             playerinfo.wonGames+=1;
+            winpercentage = (playerinfo.wonGames/playerinfo.TotalGames)*100; 
             playerinfo.gamescore = 0;
             pTotalGames.textContent = playerinfo.TotalGames;
-            pWonGames.textContent = playerinfo.wonGames;
+            pWonGames.textContent = playerinfo.wonGames + "(" + winpercentage + "%)" ;
             inputPlayerName.disabled = false;
             btnStartGame.disabled = false;
             localStorage.setItem("maxscore", playerinfo.MaxScore);
@@ -127,63 +189,29 @@ const gameLogic = function(btn){
         if(errors >= maxErrors){
             hGameWord.classList.add("gamewordlost")
             keyboardButtons.forEach(function(b){
-                b.disabled = false;
+                b.disabled = true;
                 b.style.backgroundColor = "#f0f0f0";
             });           
             streak = 0;
+            errors=0;
+            updateBallongImage();
             playerinfo.TotalGames+=1;
             playerinfo.gamescore = 0;
+            winpercentage = ((playerinfo.wonGames/playerinfo.TotalGames)*100).toFixed(2); 
+            pWonGames.textContent = playerinfo.wonGames + "(" + winpercentage + "%)" ;
             pTotalGames.textContent = playerinfo.TotalGames;
             inputPlayerName.disabled = false;
             btnStartGame.disabled = false; 
             pWord.textContent = wordArray.join("");
         }
 };
-const changeLanguageText = function(){
-    pLanguage.textContent = "Idioma " + "("+ browserinfo.language + ")";
-};
 
-function changebackgroundcolor(){
-    bodyGame.className= "";
-    if(browserinfo.browsername === "Firefox"){
-        bodyGame.classList.add("firefoxbackground");
-    }else if(browserinfo.browsername === "Edge"){
-        bodyGame.classList.add ("edgebackground");
-    }else if(browserinfo.browsername === "Chrome"){
-        bodyGame.classList.add("chromebackground");
-    }
-};
-function getPlayerName(){
-    playerinfo.playerName = getCookie("playerName");
-    pPlayerName1.textContent = playerinfo.playerName;
-};
-
-function startGame(){
-    const word = inputPlayerName.value.toUpperCase();
-    if(Number(word)){
-        alert("Ingrese nomes caracters no numeric")
-    }else if (inputPlayerName.value === "" ){
-        alert("Ingrese una paraula")
-    }else if(inputPlayerName.value.length < 3){
-         alert("Ingrese una paraula mes llarga que 3 lletres")
-    }else{
-    wordArray = word.split(""); 
-    displayArray = wordArray.map(() => "_"); 
-    pWord.textContent = displayArray.join("");
-    playerinfo.gamescore = 0;
-    pGameScore.textContent = playerinfo.gamescore;
-    btnStartGame.disabled = true;
-    inputPlayerName.value = "";
-    inputPlayerName.disabled = true;
-    }
-}
-
-function updateBallongImage() {
+const updateBallongImage = function() {
     if(errors <= maxErrors){
         imgBallon.src = `images/img_globus/img_${errors}.png`;
     }
 }
-function getCookie(cname) {
+const getCookie = function(cname) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');

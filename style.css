@@ -30,7 +30,15 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px; /* más legible */
-            width: 200px;    /* ancho adecuado */
+            width: 200px;   
+            height: 15px; 
+        }
+         input[type="password"] {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px; /* más legible */
+            width: 200px;   
             height: 15px; 
         }
         .boto {
@@ -47,16 +55,26 @@
             background: #0056b3;
         }
         
-        
-       
-        .button-div {
-            text-align: center;
-            justify-content: center; /* centra los botones horizontalmente */
-            gap: 10px;               /* espacio entre ellos */
-            margin-top: 20px;        /* un poco de separación del contenido de arriba */
+        .eye-icon {
+            width: 24px;         
+            height: 24px;
+            cursor: pointer;      
+            margin-left: 10px;   
+            vertical-align: middle; 
+            transition: transform 0.2s ease; 
         }
 
-        /* Clase específica para hacerlos más pequeños solo en esta página */
+        .eye-icon:hover {
+            transform: scale(1.2); 
+        }
+       
+        .button-div {
+            text-align: centerf;
+            justify-content: center;
+            gap: 10px;               
+            margin-top: 20px;       
+        }
+
             .wordgame {
             width: 100%;               
             background-color: #656565; 
@@ -82,7 +100,7 @@
         }
        .word-display {
             font-size: 32px;
-            letter-spacing: 20px;  /* espacio entre guiones */
+            letter-spacing: 20px;  
             text-align: center;
             margin-top: 20px;
         }
