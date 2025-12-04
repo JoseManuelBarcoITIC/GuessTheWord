@@ -29,7 +29,7 @@ const bodyGame = document.querySelector("body");
 
 const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const keyboardButtons = [];
+let keyboardButtons = [];
 var streak = 0; 
 var errors = 0;
 var maxErrors = 9;
@@ -75,9 +75,9 @@ const loadbuttons = function (){
 }
 
 const clearKeyboard = function() {
-      for (let i = 0; i < letters.length; i++){
-        btn.remove();
-      };
+     for (let i = 0; i < keyboardButtons.length; i++) {
+        keyboardButtons[i].remove();   
+    }
     keyboardButtons = [];
 };
 
@@ -91,7 +91,6 @@ btnRules.addEventListener("click", function(){
 
 btnStartGame.addEventListener("click",function(){
     startGame();
-    loadbuttons();
 
 })
 
@@ -172,12 +171,7 @@ const startGame = function(){
     pWord.textContent = displayArray.join("");
     playerinfo.gamescore = 0;
     pGameScore.textContent = playerinfo.gamescore;
-   
-    for (var i = 0; i < keyboardButtons.length; i++) {
-    keyboardButtons[i].disabled = false;
-    keyboardButtons[i].style.backgroundColor = "";
-    }
-
+    loadbuttons();
     inputPlayerName.value = "";
     inputPlayerName.disabled = true;
     imgeye.disabled=false;
@@ -261,7 +255,6 @@ const handleWin = function(player) {
 }
 const handleLose = function(player) {
     hGameWord.classList.add("gamewordlost");
-    disableKeyboard();
     player.TotalGames++;
     player.gamescore = 0;
     streak = 0;
@@ -279,12 +272,14 @@ const handleLose = function(player) {
 
     clearKeyboard();
     inputPlayerName.disabled = false;
-    btnStartGame.disabled = false;
-    pWord.textContent = wordArray.join("");
-    
+    btnStartGame.disabled = false;    
 }
 
 const updateUI = function(player) {
+    if(errors >= maxErrors) {
+        pWord.textContent = wordArray.join("");
+        return;
+    }
     if(player === playerinfo) {
         pGameScore.textContent = player.gamescore;
         pWord.textContent = displayArray.join("");
