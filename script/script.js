@@ -10,11 +10,13 @@ const inputPlayerName2 = document.getElementById("playername2");
 
 const maxscoreday = localStorage.getItem("maxscoreday");
 const maxscore = localStorage.getItem("maxscore");
+const playerNameMaxScore=localStorage.getItem("playername")
 
 const browserinfo = {
     language:"",
     browsername:"",
-    url:""
+    url:"",
+    class:"",
 };
 
 
@@ -24,13 +26,14 @@ function setCookie(cname, cvalue, exdays) {
   let expires = "expires="+ d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-
+function deleteCookie(cname) {
+    document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
 window.addEventListener("load", function (){
    changeBrowserInfo();
    changebackgroundcolor();
    loadMaxScore();
 });
-
 btnStartGame.addEventListener("click" ,function (e){
     if (inputPlayerName.value === "") {
         alert("Ingrese un nom. Sis Plau");
@@ -41,6 +44,7 @@ btnStartGame.addEventListener("click" ,function (e){
     if (inputPlayerName2.value === "") {
         const playerName1 = inputPlayerName.value.trim();
         setCookie("playerName", playerName1, 7);
+        deleteCookie("playerName2");
         window.open("game.html", "_self").focus();
     } else {
         const playerName1 = inputPlayerName.value.trim();
@@ -88,14 +92,21 @@ btnEraseScore.addEventListener("click" ,function (e){
     bodyIndex.className= "";
     if(browserinfo.browsername === "Firefox"){
         bodyIndex.classList.add("firefoxbackground");
+        browserinfo.class = "firefoxbackground"
+
     }else if(browserinfo.browsername === "Edge"){
         bodyIndex.classList.add ("edgebackground");
+        browserinfo.class = "edgebackground"
+
+
     }else if(browserinfo.browsername === "Chrome"){
         bodyIndex.classList.add("chromebackground");
+        browserinfo.class = "chromebackground"
+
     }
  };
  const loadMaxScore = function(){
-    pMaxScore.textContent = maxscoreday + " - " + maxscore + " punts"
+    pMaxScore.textContent = playerNameMaxScore + "-" + maxscoreday + " - " + maxscore + " punts"
 
  }
  

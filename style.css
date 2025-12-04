@@ -122,21 +122,26 @@
             margin: 0;             
             line-height: 1.5;      
             padding: 2px 0;  
-            }
-            .right-container {
-                margin-left: auto;   /* esto empuja el div hasta el borde derecho */
+        }
+        .right-container {
             display: flex;
-            flex-direction: column;
-            gap: 5px;
-            max-width: 300px;
+            flex-direction: column; 
+            gap: 5px;              
+            flex: 1;                 
+            max-width: 300px;        
+            background-color: #f9f9f9; 
+            padding: 15px;          
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);  
+            margin-left: auto;
         }
 
         .right-container p {
-        font-weight: bold;
-        text-align: center;
-        margin: 0;
-        line-height: 1.5;
-        padding: 2px 0;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;             
+            line-height: 1.5;      
+            padding: 2px 0;
         }
 
         .keyboard-container {
