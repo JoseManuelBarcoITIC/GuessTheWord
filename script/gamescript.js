@@ -9,6 +9,7 @@ const imgBallon = document.querySelector(".main-container img")
 const imgeye = document.querySelector(".eye-icon")
 const pLanguage = document.querySelector(".input-container p")
 const pWord = document.querySelector("h1");
+const pTimer = document.getElementById("Timer");
 const pPlayerName1 = document.getElementById("PlayerName1");
 const pPlayerName2 = document.getElementById("PlayerName2");
 const pGameScore = document.getElementById("GameScore");
@@ -25,20 +26,24 @@ const divRightContainer = document.querySelector(".right-container");
 const bodyGame = document.querySelector("body");
 
 
+
 //VARIABLES JOC
 
 const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let letters = "Hola";
+let word = "";
+
 let keyboardButtons = [];
 var streak = 0; 
 var errors = 0;
-var maxErrors = 9;
+var maxErrors = 5;
 let single;
 let wordArray = [];    
 let displayArray = [];
 let currentPlayerIndex = 0;
+let tempsTotal =120;
 
-const playerinfo = {
+let playerinfo = {
     playerName:"",
     gamescore:0,
     wonGames:0,
@@ -46,7 +51,7 @@ const playerinfo = {
     MaxScoreDay:new Date(),
     MaxScore:0
 };
-const playerinfo2 = {
+let playerinfo2 = {
     playerName:"",
     gamescore:0,
     wonGames:0,
@@ -60,10 +65,31 @@ let turn = [];
 
 
 // EVENTS
+const getAlphabetAwait = async function(language){
+    try{
+     const resposta = await fetch(`http://127.0.0.1:8000/alphabet?language=${language}`);
+     const jsonobject = await resposta.json();
+     letters = jsonobject.letters;
+    }
+    catch(e){
+
+    }
+}
+const getRandomWord = async function(language)
+        {
+        try{
+            const resposta = await fetch(`http://127.0.0.1:8000/words/randomwords?language=${language}`);
+            const jsonobject = await resposta.json();
+            word = jsonobject.word;
+            inputPlayerName.value=word;
+        }
+            catch(e){
+        }
+}
 
 const loadbuttons = function (){
-
     for (let i = 0; i < letters.length; i++) {
+        console.log(letters)
         const btn = document.createElement('button');
         btn.textContent = letters[i]; 
         btn.addEventListener("click", function(){
@@ -91,13 +117,13 @@ btnRules.addEventListener("click", function(){
 
 btnStartGame.addEventListener("click",function(){
     startGame();
-
 })
 
 imgeye.addEventListener("click",function(){
     eyeiconLogic();
 })
 window.addEventListener("load", function (){
+   getAlphabetAwait(browserinfo.language);
    changeLanguageText();
    changebackgroundcolor();
    getPlayerName();
@@ -157,14 +183,15 @@ const rightcontainervisibility=function(){
 }
 
 //FUNCTIONS GAME
-const startGame = function(){
-    const word = inputPlayerName.value.toUpperCase();
+const startGame =  async function(){
+    if(inputPlayerName.value === ""){
+        await getRandomWord(browserinfo.language);  
+    }
+    word = inputPlayerName.value.toUpperCase();
     if(Number(word)){
-        alert("Ingrese nomes caracters no numeric")
-    }else if (inputPlayerName.value === "" ){
-        alert("Ingrese una paraula")
-    }else if(inputPlayerName.value.length < 3){
-         alert("Ingrese una paraula mes llarga que 3 lletres")
+        alert("Ingrese només caracters, no numèrics");
+    } else if(word.length < 3){
+        alert("Ingrese una paraula més llarga que 3 lletres");
     }else{
     wordArray = word.split(""); 
     displayArray = wordArray.map(() => "_"); 
@@ -222,7 +249,7 @@ const handleIncorrectGuess = function(player) {
     errors++;
     updateBallongImage();
     if (player.gamescore > 0) {
-        player.gamescore -= 1;
+        player.gamescore -= 2;
     }
     streak = 0;
 }
@@ -249,11 +276,13 @@ const handleWin = function(player) {
     updateBallongImage();
     
     clearKeyboard();
+    hGameWord.classList.remove("gamewordlost")
     hGameWord.classList.add("gamewonword");
     inputPlayerName.disabled = false;
     btnStartGame.disabled = false;
 }
 const handleLose = function(player) {
+    hGameWord.classList.remove("gamewonword");
     hGameWord.classList.add("gamewordlost");
     player.TotalGames++;
     player.gamescore = 0;
@@ -356,4 +385,5 @@ const getCookie = function(cname) {
   }
   return "";
 }
+
 

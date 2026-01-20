@@ -105,8 +105,10 @@ btnEraseScore.addEventListener("click" ,function (e){
 
     }
  };
- const loadMaxScore = function(){
+const loadMaxScore = function(){
     pMaxScore.textContent = playerNameMaxScore + "-" + maxscoreday + " - " + maxscore + " punts"
 
- }
+}
  
+
+
