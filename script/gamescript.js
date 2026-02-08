@@ -9,7 +9,7 @@ const imgBallon = document.querySelector(".main-container img")
 const imgeye = document.querySelector(".eye-icon")
 const pLanguage = document.querySelector(".input-container p")
 const pWord = document.querySelector("h1");
-const pTimer = document.getElementById("Timer");
+const pTimer = document.getElementById("timer");
 const pPlayerName1 = document.getElementById("PlayerName1");
 const pPlayerName2 = document.getElementById("PlayerName2");
 const pGameScore = document.getElementById("GameScore");
@@ -30,13 +30,14 @@ const bodyGame = document.querySelector("body");
 //VARIABLES JOC
 
 const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
-let letters = "Hola";
+let letters = "";
 let word = "";
+let timerInterval = null;
 
 let keyboardButtons = [];
 var streak = 0; 
 var errors = 0;
-var maxErrors = 5;
+var maxErrors = 9;
 let single;
 let wordArray = [];    
 let displayArray = [];
@@ -44,6 +45,7 @@ let currentPlayerIndex = 0;
 let tempsTotal =120;
 
 let playerinfo = {
+    id: 0,
     playerName:"",
     gamescore:0,
     wonGames:0,
@@ -52,6 +54,7 @@ let playerinfo = {
     MaxScore:0
 };
 let playerinfo2 = {
+    id:0,
     playerName:"",
     gamescore:0,
     wonGames:0,
@@ -60,11 +63,57 @@ let playerinfo2 = {
     MaxScore:0
 };
 
+let playerpost = {
+   won_games: 0,
+   total_games: 0,
+   max_score_game: 0
+}
 let turn = [];
 
 
 
 // EVENTS
+
+const startTimer = function() {
+    clearInterval(timerInterval); // por si ya existía uno
+
+    tempsTotal = 120; // 2 minutos
+
+    timerInterval = setInterval(function() {
+
+        let minutes = Math.floor(tempsTotal / 60);
+        let seconds = tempsTotal % 60;
+
+        // formato 02:05
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        pTimer.textContent = `${minutes}:${seconds}`;
+
+        tempsTotal--;
+
+        if (tempsTotal < 0) {
+            clearInterval(timerInterval);
+            handleLose(playerinfo); // pierdes por tiempo
+        }
+
+    }, 1000);
+};
+
+const updateUserUI = function(player) {
+    if (player === playerinfo) {
+        pTotalGames.textContent = player.TotalGames;
+        pMaxScore.textContent = player.MaxScore;
+        const winpercentage = ((player.wonGames / player.TotalGames) * 100).toFixed(2);
+        pWonGames.textContent = `${player.wonGames} (${winpercentage}%)`;
+
+
+    } else {
+        pTotalGames2.textContent = player.TotalGames;
+        pWonGames2.textContent = player.wonGames;
+        pMaxScore2.textContent = player.MaxScore;
+    }
+};
+
 const getAlphabetAwait = async function(language){
     try{
      const resposta = await fetch(`http://127.0.0.1:8000/alphabet?language=${language}`);
@@ -75,21 +124,85 @@ const getAlphabetAwait = async function(language){
 
     }
 }
+
+const getUser = async function(user,playerInfoObj){
+    try{
+        const resposta = await fetch(`http://127.0.0.1:8000/user/get/${user}`);
+        console.log(resposta.json)
+        const userData = await resposta.json();
+        console.log(userData)
+        playerInfoObj.id = userData.id;
+        playerInfoObj.TotalGames = userData.total_games;
+        playerInfoObj.wonGames = userData.won_games;
+        playerInfoObj.MaxScore = userData.max_score_game;
+        
+        updateUserUI(playerInfoObj);
+    }
+    catch(e){
+    }
+}
 const getRandomWord = async function(language)
         {
         try{
             const resposta = await fetch(`http://127.0.0.1:8000/words/randomwords?language=${language}`);
             const jsonobject = await resposta.json();
             word = jsonobject.word;
-            inputPlayerName.value=word;
         }
             catch(e){
         }
 }
+ const postUserUpdate = async function(player){
+       const playerData = {
+        won_games: player.wonGames,
+        total_games: player.TotalGames,
+        max_score_game: player.MaxScore
+    };
 
+        console.log(playerData)
+    try{
+        const response = await fetch(`http://localhost:8000/users/patch/${player.playerName}`, {
+        method: "PATCH",  
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(playerData)
+        });
+        const updatedData = await response.json()
+    }catch(e){
+
+}}
+ const postGametoDB = async function(player){
+       const gamedata = {
+        user_id: player.id,
+        points: player.points,
+        errors: 0 ,
+        max_score_game: player.MaxScore
+    };
+
+        console.log(playerData)
+    try{
+        const response = await fetch(`http://localhost:8000/users/patch`, {
+        method: "POST",  
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(playerData)
+        });
+        const updatedData = await response.json()
+        console.log("Usuario actualizado:", updatedData);
+    }catch(e){
+
+}
+}
+const loadUserData = function(){
+    getPlayerName();
+    getUser(playerinfo.playerName,playerinfo)
+    if(!single){
+    getUser(playerinfo2.playerName,playerinfo2)
+    }    
+}
 const loadbuttons = function (){
     for (let i = 0; i < letters.length; i++) {
-        console.log(letters)
         const btn = document.createElement('button');
         btn.textContent = letters[i]; 
         btn.addEventListener("click", function(){
@@ -99,7 +212,6 @@ const loadbuttons = function (){
         keyboardButtons.push(btn);
      }
 }
-
 const clearKeyboard = function() {
      for (let i = 0; i < keyboardButtons.length; i++) {
         keyboardButtons[i].remove();   
@@ -126,7 +238,8 @@ window.addEventListener("load", function (){
    getAlphabetAwait(browserinfo.language);
    changeLanguageText();
    changebackgroundcolor();
-   getPlayerName();
+   loadUserData();
+   getUser();
    gamemode();
    rightcontainervisibility();
 });
@@ -143,6 +256,7 @@ const getPlayerName = function(){
     if(single){
     playerinfo.playerName = getCookie("playerName");
     pPlayerName1.textContent = playerinfo.playerName;
+
     }else{
     playerinfo.playerName = getCookie("playerName");
     playerinfo2.playerName = getCookie("playerName2");
@@ -184,8 +298,11 @@ const rightcontainervisibility=function(){
 
 //FUNCTIONS GAME
 const startGame =  async function(){
+    updateBallongImage();
+    startTimer();
     if(inputPlayerName.value === ""){
         await getRandomWord(browserinfo.language);  
+        inputPlayerName.value=word;
     }
     word = inputPlayerName.value.toUpperCase();
     if(Number(word)){
@@ -199,9 +316,10 @@ const startGame =  async function(){
     playerinfo.gamescore = 0;
     pGameScore.textContent = playerinfo.gamescore;
     loadbuttons();
-    inputPlayerName.value = "";
+    inputPlayerName.value="";
     inputPlayerName.disabled = true;
-    imgeye.disabled=false;
+    btnStartGame.disabled=true;
+    imgeye.disabled=true;
     }
 }
  
@@ -265,17 +383,21 @@ const handleWin = function(player) {
     player.wonGames++;
 
     updatePlayerRecord(playerinfo, pMaxScore);
-    updatePlayerRecord(playerinfo2, pMaxScore2)
-
     updatePlayerPercentage(playerinfo, pTotalGames, pWonGames);
+    postUserUpdate(playerinfo);
+    
+    if (!single) {
+    postUserUpdate(playerinfo2);
     updatePlayerPercentage(playerinfo2, pTotalGames2, pWonGames2);
+    updatePlayerRecord(playerinfo2, pMaxScore2)
+    }
 
     player.gamescore = 0;
     streak = 0;
     errors = 0;
-    updateBallongImage();
-    
     clearKeyboard();
+    
+
     hGameWord.classList.remove("gamewordlost")
     hGameWord.classList.add("gamewonword");
     inputPlayerName.disabled = false;
@@ -288,18 +410,18 @@ const handleLose = function(player) {
     player.gamescore = 0;
     streak = 0;
     errors = 0;
-    updateBallongImage();
 
     if (player === playerinfo) {
-    updatePlayerRecord(player, pMaxScore);
+    updatePlayerRecord(playerinfo, pMaxScore);
+    updatePlayerPercentage(playerinfo, pTotalGames, pWonGames);
+    postUserUpdate(playerinfo);
     }else {
-    updatePlayerRecord(player, pMaxScore2);
+    updatePlayerPercentage(playerinfo2, pTotalGames2, pWonGames2);
+    updatePlayerRecord(playerinfo2, pMaxScore2);
     }
-    const winpercentage = ((player.wonGames / player.TotalGames) * 100).toFixed(2);
-    pTotalGames.textContent = player.TotalGames;
-    pWonGames.textContent = `${player.wonGames} (${winpercentage}%)`;
-
     clearKeyboard();
+    pTotalGames.textContent = player.TotalGames;
+
     inputPlayerName.disabled = false;
     btnStartGame.disabled = false;    
 }
@@ -334,6 +456,10 @@ const updatePlayerRecord = function(player, maxScoreElement) {
     if (player.gamescore > player.MaxScore) {
         player.MaxScore = player.gamescore;
         player.MaxScoreDay = new Date();
+        playerpost.max_score_game = player.MaxScore;
+        playerpost.total_games = player.TotalGames;
+        playerpost.won_games = player.wonGames;
+
 
         maxScoreElement.textContent =
             `${player.MaxScoreDay.toLocaleDateString()} - ${player.MaxScore} pts`;

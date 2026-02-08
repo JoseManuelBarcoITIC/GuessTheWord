@@ -54,7 +54,10 @@
         .boto:hover {
             background: #0056b3;
         }
-        
+        .ballonimg {
+            display: block;
+            margin: 0 auto;
+        }
         .eye-icon {
             width: 24px;         
             height: 24px;
@@ -129,6 +132,9 @@
             flex-direction: column;
             gap: 5px;
             max-width: 300px;
+        }
+        .timer{
+            text-align: center;
         }
 
         .right-container p {

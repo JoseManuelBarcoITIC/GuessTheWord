@@ -5,7 +5,6 @@ const browserinfo = JSON.parse(sessionStorage.getItem("browserinfo"));
 
 const loadRender = function(valor){
      const p = document.createElement('p');
-     console.log(valor)
      p.textContent = valor;
      mainC.appendChild(p)
 }
