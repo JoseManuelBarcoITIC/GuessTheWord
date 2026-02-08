@@ -9,7 +9,7 @@ const imgBallon = document.querySelector(".main-container img")
 const imgeye = document.querySelector(".eye-icon")
 const pLanguage = document.querySelector(".input-container p")
 const pWord = document.querySelector("h1");
-const pTimer = document.getElementById("timer");
+const pTimer = document.querySelector(".timer");
 const pPlayerName1 = document.getElementById("PlayerName1");
 const pPlayerName2 = document.getElementById("PlayerName2");
 const pGameScore = document.getElementById("GameScore");
@@ -75,7 +75,7 @@ let turn = [];
 // EVENTS
 
 const startTimer = function() {
-    clearInterval(timerInterval); // por si ya existía uno
+    clearInterval(timerInterval); 
 
     tempsTotal = 120; // 2 minutos
 
@@ -84,7 +84,6 @@ const startTimer = function() {
         let minutes = Math.floor(tempsTotal / 60);
         let seconds = tempsTotal % 60;
 
-        // formato 02:05
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         pTimer.textContent = `${minutes}:${seconds}`;
@@ -93,7 +92,7 @@ const startTimer = function() {
 
         if (tempsTotal < 0) {
             clearInterval(timerInterval);
-            handleLose(playerinfo); // pierdes por tiempo
+            handleLose(playerinfo); 
         }
 
     }, 1000);
